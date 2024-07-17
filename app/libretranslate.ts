@@ -46,7 +46,6 @@ export const translate = async (
       }),
       headers: { "Content-Type": "application/json" },
     });
-    console.log(response.status);
     if (response.status >= 400) {
       throw new GraphQLError("Translation failed");
     }
@@ -86,6 +85,9 @@ export const detectLanguage = async (
   } catch (e) {
     logger.error(
       `Error performing request to ${url}: ${e.message}`,
+    );
+    logger.error(
+      `Error performing request to ${url}: ${e.cause}`,
     );
     throw e;
   } finally {
