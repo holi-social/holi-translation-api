@@ -62,7 +62,7 @@ resource "google_cloud_run_v2_service" "translation_api_service" {
 
     vpc_access {
       connector = "projects/${data.terraform_remote_state.holi_infra_state.outputs.shared_project_id}/locations/${local.default_region}/connectors/${data.terraform_remote_state.holi_infra_state.outputs.vpc_access_connector_name}"
-      egress    = "PRIVATE_RANGES_ONLY"
+      egress    = "ALL_TRAFFIC"
     }
   }
 
