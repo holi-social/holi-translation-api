@@ -10,10 +10,12 @@ import {
 import { logger } from "./logging.ts";
 import { GraphQLError } from "./deps.ts";
 
-const BASE_URL = Deno.env.get("HOLI_LIBRETRANSLATE_BASE_URL")
+const BASE_URL = Deno.env.get("HOLI_LIBRETRANSLATE_BASE_URL");
 
 if (!BASE_URL) {
-  throw new Error("HOLI_LIBRETRANSLATE_BASE_URL environment variable is not set");
+  throw new Error(
+    "HOLI_LIBRETRANSLATE_BASE_URL environment variable is not set",
+  );
 }
 
 const transformTranslationResult = (
