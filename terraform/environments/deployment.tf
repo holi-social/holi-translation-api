@@ -34,7 +34,7 @@ resource "google_cloud_run_v2_service" "translation_api_service" {
       image = "${data.terraform_remote_state.holi_infra_state.outputs.artifact_registry_location}/holi-translation-api:${var.image_tag}"
 
       ports {
-        container_port = 5000
+        container_port = 8089
       }
 
       env {
@@ -42,19 +42,22 @@ resource "google_cloud_run_v2_service" "translation_api_service" {
         value = local.environment
       }
 
-      args = ["--host", "0.0.0.0"]
+      env {
+        name  = "HOLI_LIBRETRANSLATE_BASE_URL"
+        value = local.environment == "production" ? "https://staging.libretranslate.apis.holi.social" : "https://production.libretranslate.apis.holi.social"
+      }
 
       resources {
         limits = {
           cpu    = "1"
-          memory = "512Mi"
+          memory = local.environment == "production" ? "512Mi" : "256Mi"
         }
       }
     }
 
     scaling {
       min_instance_count = local.environment == "production" ? "1" : "0"
-      max_instance_count = local.environment == "production" ? "10" : "3"
+      max_instance_count = local.environment == "production" ? "10" : "1"
     }
 
     vpc_access {
