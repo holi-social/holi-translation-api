@@ -23,64 +23,52 @@ variable "image_tag" {
   nullable = false
 }
 
-resource "google_cloud_run_service" "translation_api" {
-  project                    = data.terraform_remote_state.holi_infra_state.outputs.shared_project_id
-  name                       = random_id.main.hex
-  location                   = local.default_region
-  autogenerate_revision_name = true
+resource "google_cloud_run_v2_service" "translation_api" {
+  project  = data.terraform_remote_state.holi_infra_state.outputs.shared_project_id
+  name     = random_id.main.hex
+  location = local.default_region
+  ingress  = "INGRESS_TRAFFIC_INTERNAL_ONLY"
 
   template {
-    spec {
-      service_account_name = data.terraform_remote_state.holi_translation_api_common_state.outputs.cloud_run_service_account_email
-      containers {
-        image = "${data.terraform_remote_state.holi_infra_state.outputs.artifact_registry_location}/holi-translation-api:${var.image_tag}"
-        ports {
-          container_port = 8089
-        }
+    service_account = data.terraform_remote_state.holi_translation_api_common_state.outputs.cloud_run_service_account_email
+    containers {
+      image = "${data.terraform_remote_state.holi_infra_state.outputs.artifact_registry_location}/holi-translation-api:${var.image_tag}"
 
-        env {
-          name  = "ENVIRONMENT"
-          value = local.environment
-        }
+      ports {
+        container_port = 8089
+      }
 
-        env {
-          name  = "HOLI_LIBRETRANSLATE_BASE_URL"
-          value = local.environment == "production" ? "https://staging.libretranslate.apis.holi.social" : "https://production.libretranslate.apis.holi.social"
-        }
+      env {
+        name  = "ENVIRONMENT"
+        value = local.environment
+      }
+      env {
+        name  = "HOLI_LIBRETRANSLATE_BASE_URL"
+        value = local.environment == "production" ? "https://staging.libretranslate.apis.holi.social" : "https://production.libretranslate.apis.holi.social"
+      }
 
-        resources {
-          limits = {
-            cpu    = local.environment == "production" ? "1000m" : "1000m"
-            memory = local.environment == "production" ? "512Mi" : "256Mi"
-          }
-          requests = {
-            cpu    = local.environment == "production" ? "1000m" : "1000m"
-            memory = local.environment == "production" ? "512Mi" : "256Mi"
-          }
+      resources {
+        limits = {
+          cpu    = "1"
+          memory = local.environment == "production" ? "512Mi" : "256Mi"
         }
       }
-      container_concurrency = 0
     }
 
-    metadata {
-      annotations = {
-        "autoscaling.knative.dev/minScale"        = local.environment == "production" ? "1" : "0"
-        "autoscaling.knative.dev/maxScale"        = local.environment == "production" ? "10" : "1"
-        "run.googleapis.com/vpc-access-connector" = data.terraform_remote_state.holi_infra_state.outputs.vpc_access_connector_name
-        "run.googleapis.com/vpc-access-egress"    = "private-ranges-only"
-      }
+    scaling {
+      min_instance_count = local.environment == "production" ? "1" : "0"
+      max_instance_count = local.environment == "production" ? "10" : "1"
     }
-  }
 
-  metadata {
-    annotations = {
-      "run.googleapis.com/ingress" = "internal"
+    vpc_access {
+      connector = "projects/${data.terraform_remote_state.holi_infra_state.outputs.shared_project_id}/locations/${local.default_region}/connectors/${data.terraform_remote_state.holi_infra_state.outputs.vpc_access_connector_name}"
+      egress    = "PRIVATE_RANGES_ONLY"
     }
   }
 
   traffic {
-    percent         = 100
-    latest_revision = true
+    percent = 100
+    type    = "TRAFFIC_TARGET_ALLOCATION_TYPE_LATEST"
   }
 
   depends_on = [google_project_service.service]
