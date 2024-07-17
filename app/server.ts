@@ -48,12 +48,12 @@ const createResolvers = (_config: ServerConfig) => ({
   },
 });
 
-export const DEFAULT_PORT = 8007;
+export const DEFAULT_PORT = 8089;
 export const DEFAULT_CACHE_ENABLED = true;
 export const DEFAULT_CACHE_TTL_MS_LIBRE_TRANSLATE = 60_000;
 
 export interface ServerConfig {
-  port: number; // default: 8007
+  port: number; // default: 8089
   cacheEnabled: boolean; // default: true
   cacheTtlMsLibreTranslate: number; // default: 60 seconds
   fake: boolean; // For local development. If set, the API returns dummy data
