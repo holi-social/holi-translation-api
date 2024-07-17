@@ -44,7 +44,7 @@ resource "google_cloud_run_v2_service" "translation_api_service" {
 
       env {
         name  = "HOLI_LIBRETRANSLATE_BASE_URL"
-        value = local.environment == "production" ? "https://production.libretranslate.apis.holi.social" : "https://staging.libretranslate.apis.holi.social"
+        value = "https://${local.environment == "production" ? "production" : "staging"}.${data.terraform_remote_state.holi_libretranslate_common_state.outputs.dns_libretranslate_domain_name}"
       }
 
       resources {
