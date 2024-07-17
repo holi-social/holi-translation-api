@@ -50,7 +50,7 @@ resource "google_cloud_run_v2_service" "translation_api_service" {
       resources {
         limits = {
           cpu    = "1"
-          memory = local.environment == "production" ? "512Mi" : "256Mi"
+          memory = "512Mi"
         }
       }
     }
