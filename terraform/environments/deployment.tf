@@ -5,7 +5,6 @@ resource "random_id" "main" {
 
 resource "google_project_service" "service" {
   for_each = toset([
-    "endpoints.googleapis.com",
     "run.googleapis.com",
     "servicecontrol.googleapis.com",
     "servicemanagement.googleapis.com",
@@ -23,7 +22,7 @@ variable "image_tag" {
   nullable = false
 }
 
-resource "google_cloud_run_v2_service" "translation_api" {
+resource "google_cloud_run_v2_service" "translation_api_service" {
   project  = data.terraform_remote_state.holi_infra_state.outputs.shared_project_id
   name     = random_id.main.hex
   location = local.default_region
@@ -35,29 +34,27 @@ resource "google_cloud_run_v2_service" "translation_api" {
       image = "${data.terraform_remote_state.holi_infra_state.outputs.artifact_registry_location}/holi-translation-api:${var.image_tag}"
 
       ports {
-        container_port = 8089
+        container_port = 5000
       }
 
       env {
         name  = "ENVIRONMENT"
         value = local.environment
       }
-      env {
-        name  = "HOLI_LIBRETRANSLATE_BASE_URL"
-        value = local.environment == "production" ? "https://staging.libretranslate.apis.holi.social" : "https://production.libretranslate.apis.holi.social"
-      }
+
+      args = ["--host", "0.0.0.0"]
 
       resources {
         limits = {
           cpu    = "1"
-          memory = local.environment == "production" ? "512Mi" : "256Mi"
+          memory = "512Mi"
         }
       }
     }
 
     scaling {
       min_instance_count = local.environment == "production" ? "1" : "0"
-      max_instance_count = local.environment == "production" ? "10" : "1"
+      max_instance_count = local.environment == "production" ? "10" : "3"
     }
 
     vpc_access {
@@ -75,16 +72,16 @@ resource "google_cloud_run_v2_service" "translation_api" {
 }
 
 resource "google_cloud_run_domain_mapping" "holi_social_translation_api" {
-  project  = google_cloud_run_service.translation_api.project
-  location = google_cloud_run_service.translation_api.location
+  project  = google_cloud_run_v2_service.translation_api_service.project
+  location = google_cloud_run_v2_service.translation_api_service.location
   name     = local.dns_name
 
   metadata {
-    namespace = google_cloud_run_service.translation_api.project
+    namespace = google_cloud_run_v2_service.translation_api_service.project
   }
 
   spec {
-    route_name = google_cloud_run_service.translation_api.name
+    route_name = google_cloud_run_v2_service.translation_api_service.name
   }
 }
 
@@ -97,10 +94,9 @@ data "google_iam_policy" "translation_api" {
   }
 }
 
-resource "google_cloud_run_service_iam_policy" "translation_api" {
-  location = google_cloud_run_service.translation_api.location
-  project  = google_cloud_run_service.translation_api.project
-  service  = google_cloud_run_service.translation_api.name
-
+resource "google_cloud_run_v2_service_iam_policy" "translation_api" {
+  name        = google_cloud_run_v2_service.translation_api_service.name
+  location    = google_cloud_run_v2_service.translation_api_service.location
+  project     = google_cloud_run_v2_service.translation_api_service.project
   policy_data = data.google_iam_policy.translation_api.policy_data
 }
