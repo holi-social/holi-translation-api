@@ -21,14 +21,6 @@ data "terraform_remote_state" "holi_translation_api_common_state" {
   }
 }
 
-data "terraform_remote_state" "holi_libretranslate_common_state" {
-  backend = "gcs"
-  config = {
-    bucket = "holi-shared-terraform-state"
-    prefix = "libretranslate-common"
-  }
-}
-
 # provider google including beta features
 provider "google" {
   region = local.default_region
