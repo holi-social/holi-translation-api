@@ -11,7 +11,7 @@ variables:
 
 .deploy:
   image:
-    name: "hashicorp/terraform:1.6.1"
+    name: 'europe-north1-docker.pkg.dev/holi-shared/docker-hub-remote/hashicorp/terraform:1.6.1'
     entrypoint: ["/bin/sh", "-c"]
   variables:
     ENVIRONMENT_ID: $CI_ENVIRONMENT_SLUG
@@ -30,7 +30,7 @@ variables:
   interruptible: false
 
 cache_lint:
-  image: "denoland/deno:alpine-1.40.1"
+  image: 'europe-north1-docker.pkg.dev/holi-shared/docker-hub-remote/denoland/deno:alpine-1.40.1'
   stage: "test"
   script:
     - deno cache --lock=deno.lock app/deps.ts app/dev_deps.ts
@@ -44,7 +44,7 @@ include:
 
 build_docker:
   needs: ["cache_lint"]
-  image: docker:20.10
+  image: 'europe-north1-docker.pkg.dev/holi-shared/docker-hub-remote/docker:20.10'
   services:
     - docker:20.10-dind
   variables:
