@@ -1,10 +1,10 @@
+import { createSchema, createYoga, serve, useResponseCache } from "./deps.ts";
+import { detectLanguage, translate } from "./libretranslate.ts";
+import { logger } from "./logging.ts";
 import {
   DetectLanguageQueryParameters,
   TranslationQueryParameters,
 } from "./types.ts";
-import { createSchema, createYoga, serve, useResponseCache } from "./deps.ts";
-import { logger } from "./logging.ts";
-import { detectLanguage, translate } from "./libretranslate.ts";
 
 const typeDefs = `
     type Query {
@@ -14,7 +14,7 @@ const typeDefs = `
 `;
 
 const fakeTranslation = "This is a fake translation";
-const fakeDetectLanguage = "This is a fake detected language";
+const fakeDetectLanguage = "zz";
 
 type GraphQLContext = {
   request?: { headers: Headers };
