@@ -93,7 +93,6 @@ export const detectLanguage = async (
       method: "POST",
       body: JSON.stringify({
         q: query.text,
-        api_key: "",
       }),
       headers: { "Content-Type": "application/json" },
     });
