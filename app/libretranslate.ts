@@ -8,7 +8,8 @@ import {
   ApiTranslationReslut,
 } from "./api_types.ts";
 import { logger } from "./logging.ts";
-import { GraphQLError } from "./deps.ts";
+import { client } from "./redis.ts";
+import { createHash, GraphQLError } from "./deps.ts";
 
 const BASE_URL = Deno.env.get("HOLI_LIBRETRANSLATE_BASE_URL");
 
@@ -31,6 +32,17 @@ const transformLanguageDetectionResult = (
 export const translate = async (
   query: TranslationQueryParameters,
 ): Promise<string> => {
+  const cacheKey = createHash("sha256").update(
+    `translate:${query.text}:${query.targetLanguage}`,
+  ).toString();
+
+  const cachedResult = await client.get(cacheKey);
+
+  if (cachedResult) {
+    logger.debug(`cache hit: ${JSON.stringify({ key: cacheKey })}`);
+    return cachedResult;
+  }
+
   const url = `${BASE_URL}/translate`;
   logger.info(`Starting translation...`);
   const start = Date.now();
@@ -42,7 +54,6 @@ export const translate = async (
         source: "auto",
         target: query.targetLanguage,
         format: TranslationFormat.TEXT,
-        api_key: "",
       }),
       headers: { "Content-Type": "application/json" },
     });
@@ -50,10 +61,19 @@ export const translate = async (
       throw new GraphQLError("Translation failed");
     }
     const json = await response.json();
-    return transformTranslationResult(json);
+    const result = transformTranslationResult(json);
+
+    await client.set(cacheKey, result);
+
+    return result;
   } catch (e) {
     logger.error(
-      `Error performing request to ${url}: ${e.message}`,
+      `Error performing request to ${url}: ${
+        JSON.stringify({
+          message: e.message,
+          cause: e.cause,
+        })
+      }`,
     );
     throw e;
   } finally {
@@ -73,7 +93,6 @@ export const detectLanguage = async (
       method: "POST",
       body: JSON.stringify({
         q: query.text,
-        api_key: "",
       }),
       headers: { "Content-Type": "application/json" },
     });
@@ -84,10 +103,12 @@ export const detectLanguage = async (
     return transformLanguageDetectionResult(json);
   } catch (e) {
     logger.error(
-      `Error performing request to ${url}: ${e.message}`,
-    );
-    logger.error(
-      `Error performing request to ${url}: ${e.cause}`,
+      `Error performing request to ${url}: ${
+        JSON.stringify({
+          message: e.message,
+          cause: e.cause,
+        })
+      }`,
     );
     throw e;
   } finally {
