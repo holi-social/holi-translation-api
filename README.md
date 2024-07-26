@@ -151,8 +151,14 @@ if "you know what you're doing".
 
 ### Configuration
 
+To run it locally, use the same Redis environment variables as those used by your local `unified-api` or `okuna`.
+
 | Environment Variable         | Default Value | Description                                   |
-| ---------------------------- | ------------- | ----------------------------------------------|
+| ---------------------------- | ------------- | --------------------------------------------- |
 | PORT                         | 8089          | the port to listen on                         |
 | CACHE_ENABLED                | true          | wether or not to enable caching               |
 | CACHE_TTL_MS_LIBRE_TRANSLATE | 60 seconds    | time-to-live in ms for libretranslate caching |
+| REDIS_HOST                   | localhost     | the hostname of the Redis server              |
+| REDIS_PORT                   | 6380          | the port number of the Redis server           |
+| REDIS_PASSWORD               | -             | the password for the Redis server             |
+| REDIS_DB                     | -             | the Redis database number to use              |

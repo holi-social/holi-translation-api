@@ -47,6 +47,29 @@ resource "google_cloud_run_v2_service" "translation_api_service" {
         value = local.environment == "production" ? "https://production.libretranslate.apis.holi.social" : "https://staging.libretranslate.apis.holi.social"
       }
 
+      env {
+        name  = "REDIS_HOST"
+        value = data.terraform_remote_state.holi_infra_state.outputs.redis_host_cmek_development
+      }
+      env {
+        name  = "REDIS_PORT"
+        value = data.terraform_remote_state.holi_infra_state.outputs.redis_port_cmek_development
+      }
+      env {
+        name = "REDIS_PASSWORD"
+        value_source {
+          secret_key_ref {
+            secret  = "REDIS_CMEK_PASSWORD"
+            version = "latest"
+
+          }
+        }
+      }
+      env {
+        name  = "REDIS_DB"
+        value = local.environment == "production" ? "13" : "5"
+      }
+
       resources {
         limits = {
           cpu    = "1"
