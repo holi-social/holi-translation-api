@@ -67,7 +67,7 @@ resource "google_cloud_run_v2_service" "translation_api_service" {
       }
       env {
         name  = "REDIS_DB"
-        value = "10"
+        value = local.environment == "production" ? "15" : "7"
       }
 
       resources {
