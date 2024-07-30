@@ -23,7 +23,6 @@ variables:
     name: "${CI_JOB_NAME}_${CI_JOB_ID}"
     expire_in: 1 month
   script:
-    - export GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_CLOUD_SERVICE_ACCOUNT}
     - terraform/environments/scripts/create-or-update-env.sh $ENVIRONMENT_ID $CI_COMMIT_SHA
     - echo "$(terraform/environments/scripts/get-api-domain.sh)" > $API_DOMAIN_PATH
   resource_group: $ENVIRONMENT_ID
