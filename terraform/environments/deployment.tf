@@ -75,6 +75,8 @@ resource "google_cloud_run_v2_service" "translation_api_service" {
           cpu    = "1"
           memory = "512Mi"
         }
+        cpu_idle          = true
+        startup_cpu_boost = true
       }
     }
 
