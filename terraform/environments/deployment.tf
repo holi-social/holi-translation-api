@@ -90,10 +90,17 @@ resource "google_cloud_run_v2_service" "translation_api_service" {
       egress    = "ALL_TRAFFIC"
     }
 
+    # labels set on the resource level
     labels = {
       "environment_type" = local.environment_type
       "holi_service"     = "translation-api"
     }
+  }
+
+  # labels set on the service level
+  labels = {
+    "environment_type" = local.environment_type
+    "holi_service"     = "translation-api"
   }
 
   traffic {
