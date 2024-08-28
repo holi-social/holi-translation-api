@@ -75,6 +75,8 @@ resource "google_cloud_run_v2_service" "translation_api_service" {
           cpu    = "1"
           memory = "512Mi"
         }
+        cpu_idle          = true
+        startup_cpu_boost = true
       }
     }
 
@@ -87,6 +89,18 @@ resource "google_cloud_run_v2_service" "translation_api_service" {
       connector = "projects/${data.terraform_remote_state.holi_infra_state.outputs.shared_project_id}/locations/${local.default_region}/connectors/${data.terraform_remote_state.holi_infra_state.outputs.vpc_access_connector_name}"
       egress    = "ALL_TRAFFIC"
     }
+
+    # labels set on the resource level
+    labels = {
+      "environment_type" = local.environment_type
+      "holi_service"     = "translation-api"
+    }
+  }
+
+  # labels set on the service level
+  labels = {
+    "environment_type" = local.environment_type
+    "holi_service"     = "translation-api"
   }
 
   traffic {
