@@ -1,13 +1,13 @@
 export type TranslationQueryParameters = {
-  text: string;
-  targetLanguage: string;
-};
+  text: string
+  targetLanguage: string
+}
 
 export type DetectLanguageQueryParameters = {
-  text: string;
-};
+  text: string
+}
 
 export enum TranslationFormat {
-  TEXT = "text",
-  HTML = "html",
+  TEXT = 'text',
+  HTML = 'html',
 }

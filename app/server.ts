@@ -1,31 +1,28 @@
-import { createSchema, createYoga, serve, useResponseCache } from "./deps.ts";
-import { detectLanguage, translate } from "./libretranslate.ts";
-import { logger } from "./logging.ts";
-import {
-  DetectLanguageQueryParameters,
-  TranslationQueryParameters,
-} from "./types.ts";
+import { createSchema, createYoga, serve, useResponseCache } from './deps.ts'
+import { detectLanguage, translate } from './libretranslate.ts'
+import { logger } from './logging.ts'
+import { DetectLanguageQueryParameters, TranslationQueryParameters } from './types.ts'
 
 const typeDefs = `
     type Query {
         translate(text: String!, targetLanguage: String!): String!
         detectLanguage(text: String!): String!
     }
-`;
+`
 
-const fakeTranslation = "This is a fake translation";
-const fakeDetectLanguage = "zz";
+const fakeTranslation = 'This is a fake translation'
+const fakeDetectLanguage = 'zz'
 
 type GraphQLContext = {
-  request?: { headers: Headers };
+  request?: { headers: Headers }
   params?: {
     extensions?: {
       headers?: {
-        [key: string]: string;
-      };
-    };
-  };
-};
+        [key: string]: string
+      }
+    }
+  }
+}
 
 const createResolvers = (_config: ServerConfig) => ({
   Query: {
@@ -46,17 +43,17 @@ const createResolvers = (_config: ServerConfig) => ({
         parameters,
       ),
   },
-});
+})
 
-export const DEFAULT_PORT = 8089;
-export const DEFAULT_CACHE_ENABLED = true;
-export const DEFAULT_CACHE_TTL_MS_LIBRE_TRANSLATE = 60_000;
+export const DEFAULT_PORT = 8089
+export const DEFAULT_CACHE_ENABLED = true
+export const DEFAULT_CACHE_TTL_MS_LIBRE_TRANSLATE = 60_000
 
 export interface ServerConfig {
-  port: number; // default: 8089
-  cacheEnabled: boolean; // default: true
-  cacheTtlMsLibreTranslate: number; // default: 60 seconds
-  fake: boolean; // For local development. If set, the API returns dummy data
+  port: number // default: 8089
+  cacheEnabled: boolean // default: true
+  cacheTtlMsLibreTranslate: number // default: 60 seconds
+  fake: boolean // For local development. If set, the API returns dummy data
 }
 
 export const createGraphQLServer = (config: ServerConfig): GraphQLServer => {
@@ -65,38 +62,36 @@ export const createGraphQLServer = (config: ServerConfig): GraphQLServer => {
       useResponseCache({
         session: () => null, // global cache, shared by all users
         ttlPerSchemaCoordinate: {
-          "Query.translate": config.cacheTtlMsLibreTranslate,
-          "Query.detectLanguage": config.cacheTtlMsLibreTranslate,
+          'Query.translate': config.cacheTtlMsLibreTranslate,
+          'Query.detectLanguage': config.cacheTtlMsLibreTranslate,
         },
       }),
     ]
-    : [];
-  const resolvers = createResolvers(config);
+    : []
+  const resolvers = createResolvers(config)
   return createYoga({
     schema: createSchema({ resolvers, typeDefs }),
     graphiql: true,
     plugins,
-  });
-};
+  })
+}
 
 // deno-lint-ignore no-explicit-any
-export type GraphQLServer = any;
+export type GraphQLServer = any
 
 export const startServer = (config: ServerConfig): Promise<void> => {
-  const graphQLServer: GraphQLServer = createGraphQLServer(config);
+  const graphQLServer: GraphQLServer = createGraphQLServer(config)
   return serve(graphQLServer, {
     port: config.port,
     onListen({ port, hostname }) {
       logger.info(
-        `Server started at http://${
-          hostname === "0.0.0.0" ? "localhost" : hostname
-        }:${port}/graphql`,
-      );
+        `Server started at http://${hostname === '0.0.0.0' ? 'localhost' : hostname}:${port}/graphql`,
+      )
       if (config.fake) {
         logger.info(
           `Server is serving fake data due to FAKE env var set to true`,
-        );
+        )
       }
     },
-  });
-};
+  })
+}
