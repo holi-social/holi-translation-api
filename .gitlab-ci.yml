@@ -30,8 +30,16 @@ variables:
   resource_group: $ENVIRONMENT_ID
   interruptible: false
 
+.smoketest:
+  image: 'europe-north1-docker.pkg.dev/holi-shared/docker/holi-docker/holi-k6-builder'
+  script:
+    - API_DOMAIN=$(cat $API_DOMAIN_PATH)
+    - terraform/environments/scripts/wait-for-ssl.sh "https://${API_DOMAIN}"
+    - BASE_URL="https://${API_DOMAIN}/graphql" /tmp/k6 run smoketest/main.js
+    # TODO should/could we roll back the service to the last working revision on test failure?
+
 cache_lint:
-  image: 'europe-north1-docker.pkg.dev/holi-shared/docker-hub-remote/denoland/deno:alpine-1.45.2'
+  image: 'europe-north1-docker.pkg.dev/holi-shared/docker-hub-remote/denoland/deno:2.0.0'
   stage: "test"
   script:
     - deno cache --lock=deno.lock app/deps.ts app/dev_deps.ts
@@ -70,6 +78,12 @@ staging_deploy:
   only:
     - main
 
+staging_smoketest:
+  extends: .smoketest
+  needs: ['staging_deploy']
+  only:
+    - main
+
 staging_trigger_unified-api_redeployment:
   needs: ["staging_deploy"]
   trigger:
@@ -90,6 +104,12 @@ production_deploy:
     url: https://production.translation.apis.holi.social
   variables:
     ENVIRONMENT_ID: production
+  only:
+    - production
+
+production_smoketest:
+  extends: .smoketest
+  needs: ['production_deploy']
   only:
     - production
 
