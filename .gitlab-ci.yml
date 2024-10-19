@@ -77,6 +77,7 @@ staging_trigger_unified-api_redeployment:
     branch: "main"
   only:
     - main
+  resource_group: unified-api-staging
 
 ## production environment
 
@@ -100,3 +101,4 @@ production_trigger_unified-api_redeployment:
     branch: "production"
   only:
     - production
+  resource_group: unified-api-production
