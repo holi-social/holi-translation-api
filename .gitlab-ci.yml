@@ -9,20 +9,20 @@ default:
     - 1cpu-4gb
 
 variables:
-  API_DOMAIN_PATH: "$CI_PROJECT_DIR/api_domain"
+  API_DOMAIN_PATH: '$CI_PROJECT_DIR/api_domain'
 
 .deploy:
   image:
     name: 'europe-north1-docker.pkg.dev/holi-shared/docker-hub-remote/hashicorp/terraform:1.6.6'
-    entrypoint: ["/bin/sh", "-c"]
+    entrypoint: ['/bin/sh', '-c']
   variables:
     ENVIRONMENT_ID: $CI_ENVIRONMENT_SLUG
   artifacts:
     paths:
-      - "terraform/environments/crash.log"
-      - "terraform/environments/terraform-*.log"
+      - 'terraform/environments/crash.log'
+      - 'terraform/environments/terraform-*.log'
       - $API_DOMAIN_PATH
-    name: "${CI_JOB_NAME}_${CI_JOB_ID}"
+    name: '${CI_JOB_NAME}_${CI_JOB_ID}'
     expire_in: 1 month
   script:
     - terraform/environments/scripts/create-or-update-env.sh $ENVIRONMENT_ID $CI_COMMIT_SHA
@@ -40,19 +40,19 @@ variables:
 
 cache_lint:
   image: 'europe-north1-docker.pkg.dev/holi-shared/docker-hub-remote/denoland/deno:2.0.0'
-  stage: "test"
+  stage: 'test'
   script:
     - deno cache --lock=deno.lock app/deps.ts app/dev_deps.ts
     - deno fmt --check
     - deno lint
 sast:
-  needs: ["cache_lint"]
+  needs: ['cache_lint']
   stage: test
 include:
   - template: Security/SAST.gitlab-ci.yml
 
 build_docker:
-  needs: ["cache_lint"]
+  needs: ['cache_lint']
   image: 'europe-north1-docker.pkg.dev/holi-shared/docker-hub-remote/docker:27'
   services:
     - 'docker:27-dind'
@@ -68,7 +68,7 @@ build_docker:
 
 staging_deploy:
   extends: .deploy
-  needs: ["build_docker"]
+  needs: ['build_docker']
   environment:
     name: staging
     deployment_tier: staging
@@ -85,10 +85,10 @@ staging_smoketest:
     - main
 
 staging_trigger_unified-api_redeployment:
-  needs: ["staging_deploy"]
+  needs: ['staging_deploy']
   trigger:
-    project: "app/holi-unified-api"
-    branch: "main"
+    project: 'app/holi-unified-api'
+    branch: 'main'
   only:
     - main
 
@@ -96,7 +96,7 @@ staging_trigger_unified-api_redeployment:
 
 production_deploy:
   extends: .deploy
-  needs: ["build_docker"]
+  needs: ['build_docker']
   allow_failure: false
   environment:
     name: production
@@ -114,9 +114,9 @@ production_smoketest:
     - production
 
 production_trigger_unified-api_redeployment:
-  needs: ["production_deploy"]
+  needs: ['production_deploy']
   trigger:
-    project: "app/holi-unified-api"
-    branch: "production"
+    project: 'app/holi-unified-api'
+    branch: 'production'
   only:
     - production

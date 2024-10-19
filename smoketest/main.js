@@ -34,7 +34,7 @@ export default () => {
     check(JSON.parse(response.body), {
       // there can be multiple tests here, e.g.
       //"contains topics object": (r) => typeof r.data.topics != null,
-      'contains schema description': (r) => typeof r.data.detectLanguage === "string",
+      'contains schema description': (r) => typeof r.data.detectLanguage === 'string',
     })
   })
 }
