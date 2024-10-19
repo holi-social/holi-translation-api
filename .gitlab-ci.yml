@@ -42,7 +42,7 @@ cache_lint:
   image: 'europe-north1-docker.pkg.dev/holi-shared/docker-hub-remote/denoland/deno:2.0.0'
   stage: 'test'
   script:
-    - deno cache --lock=deno.lock app/deps.ts app/dev_deps.ts
+    - deno cache --allow-import --lock=deno.lock app/deps.ts app/dev_deps.ts
     - deno fmt --check
     - deno lint
 sast:
