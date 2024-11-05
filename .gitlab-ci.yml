@@ -26,7 +26,7 @@ variables:
     expire_in: 1 month
   script:
     - terraform/environments/scripts/create-or-update-env.sh "$ENVIRONMENT_ID" "$CI_COMMIT_SHA"
-    - echo "$(terraform/environments/scripts/get-api-domain.sh)" > "$API_DOMAIN_PATH"
+    - echo "$(terraform/environments/scripts/get-output.sh api_domain)" > "$API_DOMAIN_PATH"
   resource_group: $ENVIRONMENT_ID
   interruptible: false
 
