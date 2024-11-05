@@ -25,15 +25,15 @@ variables:
     name: '${CI_JOB_NAME}_${CI_JOB_ID}'
     expire_in: 1 month
   script:
-    - terraform/environments/scripts/create-or-update-env.sh $ENVIRONMENT_ID $CI_COMMIT_SHA
-    - echo "$(terraform/environments/scripts/get-output.sh api_domain)" > $API_DOMAIN_PATH
+    - terraform/environments/scripts/create-or-update-env.sh "$ENVIRONMENT_ID" "$CI_COMMIT_SHA"
+    - echo "$(terraform/environments/scripts/get-output.sh api_domain)" > "$API_DOMAIN_PATH"
   resource_group: $ENVIRONMENT_ID
   interruptible: false
 
 .smoketest:
   image: 'europe-north1-docker.pkg.dev/holi-shared/docker/holi-docker/holi-k6-builder'
   script:
-    - API_DOMAIN=$(cat $API_DOMAIN_PATH)
+    - API_DOMAIN=$(cat "$API_DOMAIN_PATH")
     - terraform/environments/scripts/wait-for-ssl.sh "https://${API_DOMAIN}"
     - BASE_URL="https://${API_DOMAIN}/graphql" k6 run smoketest/main.js
     # TODO should/could we roll back the service to the last working revision on test failure?
@@ -60,10 +60,10 @@ build_docker:
   variables:
     GCR_IMAGE: europe-north1-docker.pkg.dev/holi-shared/docker/holi-translation-api
   script:
-    - docker pull $GCR_IMAGE || true
-    - docker build --cache-from $GCR_IMAGE -t $GCR_IMAGE:latest -t $GCR_IMAGE:$CI_COMMIT_SHA -t $GCR_IMAGE:$CI_COMMIT_REF_SLUG .
-    - docker push $GCR_IMAGE:$CI_COMMIT_SHA
-    - docker push $GCR_IMAGE:$CI_COMMIT_REF_SLUG
+    - docker pull "$GCR_IMAGE" || true
+    - docker build --cache-from "$GCR_IMAGE" -t "$GCR_IMAGE":latest -t "$GCR_IMAGE":"$CI_COMMIT_SHA" -t "$GCR_IMAGE":"$CI_COMMIT_REF_SLUG" .
+    - docker push "$GCR_IMAGE":"$CI_COMMIT_SHA"
+    - docker push "$GCR_IMAGE":"$CI_COMMIT_REF_SLUG"
 
 ## staging environment
 
