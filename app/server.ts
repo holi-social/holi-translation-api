@@ -81,7 +81,18 @@ export type GraphQLServer = any
 
 export const startServer = (config: ServerConfig): Promise<void> => {
   const graphQLServer: GraphQLServer = createGraphQLServer(config)
-  return serve(graphQLServer, {
+
+  const handler = (request: Request): Response => {
+    const url = new URL(request.url)
+
+    if (url.pathname === '/health') {
+      return new Response('OK', { status: 200 })
+    }
+
+    return graphQLServer.handleRequest(request)
+  }
+
+  return serve(handler, {
     port: config.port,
     onListen({ port, hostname }) {
       logger.info(
