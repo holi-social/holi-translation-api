@@ -78,6 +78,24 @@ resource "google_cloud_run_v2_service" "translation_api_service" {
         cpu_idle          = true
         startup_cpu_boost = true
       }
+      startup_probe {
+        http_get {
+          path = "/health"
+        }
+        initial_delay_seconds = 5
+        failure_threshold     = 3
+        period_seconds        = 5
+        timeout_seconds       = 2
+      }
+      liveness_probe {
+        http_get {
+          path = "/health"
+        }
+        initial_delay_seconds = 10
+        period_seconds        = 30
+        timeout_seconds       = 2
+        failure_threshold     = 3
+      }
     }
 
     scaling {
@@ -106,7 +124,11 @@ resource "google_cloud_run_v2_service" "translation_api_service" {
   traffic {
     percent = 100
     type    = "TRAFFIC_TARGET_ALLOCATION_TYPE_LATEST"
+
+
   }
+
+
 
   depends_on = [google_project_service.service]
 }
