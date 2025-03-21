@@ -37,7 +37,7 @@ variables:
     # TODO should/could we roll back the service to the last working revision on test failure?
 
 cache_lint:
-  image: 'europe-north1-docker.pkg.dev/holi-shared/docker-hub-remote/denoland/deno:2.2.4'
+  image: 'europe-north1-docker.pkg.dev/holi-shared/docker-hub-remote/denoland/deno:2.2.5'
   stage: 'test'
   script:
     - deno cache --allow-import --lock=deno.lock app/deps.ts app/dev_deps.ts
