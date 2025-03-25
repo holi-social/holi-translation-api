@@ -1,9 +1,7 @@
 default:
   before_script:
     - set -e
-    # env -0 | sort -z | tr '\0' '\n': Sort env output alphabetically, keeping multiline variables intact
-    # egrep: Remove sensitive information from the output of env
-    #- env -0 | sort -z | tr '\0' '\n' | egrep -ve '^(DOCKER_AUTH_CONFIG|GOOGLE_APPLICATION_CREDENTIALS)=.*'
+    # DANGER don't use `set -x` or print the environment via e.g. `env` in pipeline runs, this might leak credentials (has leaked them)
   interruptible: true
   tags:
     - 1cpu-4gb
@@ -39,7 +37,7 @@ variables:
     # TODO should/could we roll back the service to the last working revision on test failure?
 
 cache_lint:
-  image: 'europe-north1-docker.pkg.dev/holi-shared/docker-hub-remote/denoland/deno:2.2.3'
+  image: 'europe-north1-docker.pkg.dev/holi-shared/docker-hub-remote/denoland/deno:2.2.5'
   stage: 'test'
   script:
     - deno cache --allow-import --lock=deno.lock app/deps.ts app/dev_deps.ts
@@ -77,14 +75,16 @@ staging_deploy:
     url: https://staging.translation.apis.holi.social
   variables:
     ENVIRONMENT_ID: staging
-  only:
-    - main
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      when: on_success
 
 staging_smoketest:
   extends: .smoketest
   needs: ['staging_deploy']
-  only:
-    - main
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      when: on_success
 
 staging_trigger_unified-api_redeployment:
   needs: ['staging_smoketest']
@@ -94,8 +94,9 @@ staging_trigger_unified-api_redeployment:
     forward:
       yaml_variables: false
       pipeline_variables: false
-  only:
-    - main
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      when: on_success
   resource_group: unified-api-staging
 
 ## production environment
@@ -110,14 +111,16 @@ production_deploy:
     url: https://production.translation.apis.holi.social
   variables:
     ENVIRONMENT_ID: production
-  only:
-    - production
+  rules:
+    - if: $CI_COMMIT_BRANCH == "production"
+      when: on_success
 
 production_smoketest:
   extends: .smoketest
   needs: ['production_deploy']
-  only:
-    - production
+  rules:
+    - if: $CI_COMMIT_BRANCH == "production"
+      when: on_success
 
 production_trigger_unified-api_redeployment:
   needs: ['production_smoketest']
@@ -127,6 +130,7 @@ production_trigger_unified-api_redeployment:
     forward:
       yaml_variables: false
       pipeline_variables: false
-  only:
-    - production
+  rules:
+    - if: $CI_COMMIT_BRANCH == "production"
+      when: on_success
   resource_group: unified-api-production
