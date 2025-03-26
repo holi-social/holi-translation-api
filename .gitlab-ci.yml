@@ -11,7 +11,7 @@ variables:
 
 .deploy:
   image:
-    name: 'europe-north1-docker.pkg.dev/holi-shared/docker-hub-remote/hashicorp/terraform:1.11.2'
+    name: 'europe-north1-docker.pkg.dev/holi-shared/docker-hub-remote/hashicorp/terraform:1.11.3'
     entrypoint: ['/bin/sh', '-c']
   variables:
     ENVIRONMENT_ID: $CI_ENVIRONMENT_SLUG
