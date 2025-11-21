@@ -51,9 +51,9 @@ include:
 
 build_docker:
   needs: ['cache_lint']
-  image: 'europe-north1-docker.pkg.dev/holi-shared/docker-hub-remote/docker:28'
+  image: 'europe-north1-docker.pkg.dev/holi-shared/docker-hub-remote/docker:29'
   services:
-    - name: 'europe-north1-docker.pkg.dev/holi-shared/docker-hub-remote/docker:28-dind'
+    - name: 'europe-north1-docker.pkg.dev/holi-shared/docker-hub-remote/docker:29-dind'
       alias: 'docker'
   variables:
     GCR_IMAGE: europe-north1-docker.pkg.dev/holi-shared/docker/holi-translation-api
