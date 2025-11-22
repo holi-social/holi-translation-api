@@ -1,4 +1,4 @@
-import { createClient } from 'npm:redis@^4.6'
+import { createClient } from 'redis'
 
 const missingEnvVars = []
 
