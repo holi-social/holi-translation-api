@@ -23,5 +23,8 @@
     "exclude": [
       "*.md"
     ]
+  },
+  "imports": {
+    "redis": "npm:redis@^4.6"
   }
 }

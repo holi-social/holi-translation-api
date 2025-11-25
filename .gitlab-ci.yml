@@ -11,7 +11,7 @@ variables:
 
 .deploy:
   image:
-    name: 'europe-north1-docker.pkg.dev/holi-shared/docker-hub-remote/hashicorp/terraform:1.11.4'
+    name: 'europe-north1-docker.pkg.dev/holi-shared/docker-hub-remote/hashicorp/terraform:1.14.0'
     entrypoint: ['/bin/sh', '-c']
   variables:
     ENVIRONMENT_ID: $CI_ENVIRONMENT_SLUG
@@ -37,7 +37,7 @@ variables:
     # TODO should/could we roll back the service to the last working revision on test failure?
 
 cache_lint:
-  image: 'europe-north1-docker.pkg.dev/holi-shared/docker-hub-remote/denoland/deno:2.2.15'
+  image: 'europe-north1-docker.pkg.dev/holi-shared/docker-hub-remote/denoland/deno:2.5.6'
   stage: 'test'
   script:
     - deno cache --allow-import --lock=deno.lock app/deps.ts app/dev_deps.ts
@@ -51,9 +51,9 @@ include:
 
 build_docker:
   needs: ['cache_lint']
-  image: 'europe-north1-docker.pkg.dev/holi-shared/docker-hub-remote/docker:28'
+  image: 'europe-north1-docker.pkg.dev/holi-shared/docker-hub-remote/docker:29'
   services:
-    - name: 'europe-north1-docker.pkg.dev/holi-shared/docker-hub-remote/docker:28-dind'
+    - name: 'europe-north1-docker.pkg.dev/holi-shared/docker-hub-remote/docker:29-dind'
       alias: 'docker'
   variables:
     GCR_IMAGE: europe-north1-docker.pkg.dev/holi-shared/docker/holi-translation-api
