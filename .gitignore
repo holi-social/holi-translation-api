@@ -2,3 +2,5 @@
 coverage
 terraform*.log
 /.gitlab-ci-local
+.idea
+
