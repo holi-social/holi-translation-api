@@ -20,11 +20,9 @@
     "lineWidth": 120,
     "singleQuote": true,
     "semiColons": false,
-    "exclude": [
-      "*.md"
-    ]
+    "exclude": ["*.md"]
   },
   "imports": {
-    "redis": "npm:redis@^5.0.0"
+    "redis": "npm:redis@^5.12.1"
   }
 }
