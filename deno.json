@@ -25,6 +25,6 @@
     ]
   },
   "imports": {
-    "redis": "npm:redis@^4.6"
+    "redis": "npm:redis@^5.0.0"
   }
 }

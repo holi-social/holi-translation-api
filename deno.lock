@@ -4,9 +4,7 @@
     "npm:@graphql-yoga/plugin-response-cache@1.0.0": "1.0.0_graphql@16.8.1_graphql-yoga@3.9.1__graphql@16.8.1__@envelop+core@3.0.6",
     "npm:graphql-yoga@5.0.1": "5.0.1_graphql@16.8.1",
     "npm:graphql@16.8.1": "16.8.1",
-    "npm:redis@4.6.15": "4.6.15_@redis+client@1.5.17",
-    "npm:redis@^4.5.0": "4.6.15_@redis+client@1.5.17",
-    "npm:redis@^4.6.0": "4.6.15_@redis+client@1.5.17"
+    "npm:redis@5": "5.11.0"
   },
   "npm": {
     "@envelop/core@3.0.6": {
@@ -61,7 +59,7 @@
       "dependencies": [
         "@graphql-tools/utils@9.2.1_graphql@16.8.1",
         "@graphql-typed-document-node/core",
-        "@repeaterjs/repeater@3.0.4",
+        "@repeaterjs/repeater",
         "graphql",
         "tslib",
         "value-or-promise"
@@ -72,7 +70,7 @@
       "dependencies": [
         "@graphql-tools/utils@10.3.2_graphql@16.8.1",
         "@graphql-typed-document-node/core",
-        "@repeaterjs/repeater@3.0.6",
+        "@repeaterjs/repeater",
         "graphql",
         "tslib",
         "value-or-promise"
@@ -169,7 +167,6 @@
       "integrity": "sha512-Vc9lh8KzIHyS3n4jBlCbz7zCjcbtQnOBpsymcRvHhFr2cuH+knmRn0EmzimMQ58jQ8kxoRXXC3KJS3RIxSdPIg==",
       "dependencies": [
         "@graphql-yoga/typed-event-target@1.0.0",
-        "@repeaterjs/repeater@3.0.6",
         "@whatwg-node/events@0.0.2",
         "tslib"
       ]
@@ -178,7 +175,7 @@
       "integrity": "sha512-1wCB1DfAnaLzS+IdoOzELGGnx1ODEg9nzQXFh4u2j02vAnne6d+v4A7HIH9EqzVdPLoAaMKXCZUUdKs+j3z1fg==",
       "dependencies": [
         "@graphql-yoga/typed-event-target@3.0.0",
-        "@repeaterjs/repeater@3.0.6",
+        "@repeaterjs/repeater",
         "@whatwg-node/events@0.1.1",
         "tslib"
       ]
@@ -186,14 +183,13 @@
     "@graphql-yoga/typed-event-target@1.0.0": {
       "integrity": "sha512-Mqni6AEvl3VbpMtKw+TIjc9qS9a8hKhiAjFtqX488yq5oJtj9TkNlFTIacAVS3vnPiswNsmDiQqvwUOcJgi1DA==",
       "dependencies": [
-        "@repeaterjs/repeater@3.0.6",
         "tslib"
       ]
     },
     "@graphql-yoga/typed-event-target@3.0.0": {
       "integrity": "sha512-w+liuBySifrstuHbFrHoHAEyVnDFVib+073q8AeAJ/qqJfvFvAwUPLLtNohR/WDVRgSasfXtl3dcNuVJWN+rjg==",
       "dependencies": [
-        "@repeaterjs/repeater@3.0.6",
+        "@repeaterjs/repeater",
         "tslib"
       ]
     },
@@ -224,49 +220,38 @@
         "webcrypto-core"
       ]
     },
-    "@redis/bloom@1.2.0_@redis+client@1.5.17": {
-      "integrity": "sha512-HG2DFjYKbpNmVXsa0keLHp/3leGJz1mjh09f2RLGGLQZzSHpkmZWuwJbAvo3QcRY8p80m5+ZdXZdYOSBLlp7Cg==",
+    "@redis/bloom@5.11.0_@redis+client@5.11.0": {
+      "integrity": "sha512-KYiVilAhAFN3057afUb/tfYJpsEyTkQB+tQcn5gVVA7DgcNOAj8lLxe4j8ov8BF6I9C1Fe/kwlbuAICcTMX8Lw==",
       "dependencies": [
         "@redis/client"
       ]
     },
-    "@redis/client@1.5.17": {
-      "integrity": "sha512-IPvU9A31qRCZ7lds/x+ksuK/UMndd0EASveAvCvEtFFKIZjZ+m/a4a0L7S28KEWoR5ka8526hlSghDo4Hrc2Hg==",
+    "@redis/client@5.11.0": {
+      "integrity": "sha512-GHoprlNQD51Xq2Ztd94HHV94MdFZQ3CVrpA04Fz8MVoHM0B7SlbmPEVIjwTbcv58z8QyjnrOuikS0rWF03k5dQ==",
       "dependencies": [
-        "cluster-key-slot",
-        "generic-pool",
-        "yallist"
+        "cluster-key-slot"
       ]
     },
-    "@redis/graph@1.1.1_@redis+client@1.5.17": {
-      "integrity": "sha512-FEMTcTHZozZciLRl6GiiIB4zGm5z5F3F6a6FZCyrfxdKOhFlGkiAqlexWMBzCi4DcRoyiOsuLfW+cjlGWyExOw==",
+    "@redis/json@5.11.0_@redis+client@5.11.0": {
+      "integrity": "sha512-1iAy9kAtcD0quB21RbPTbUqqy+T2Uu2JxucwE+B4A+VaDbIRvpZR6DMqV8Iqaws2YxJYB3GC5JVNzPYio2ErUg==",
       "dependencies": [
         "@redis/client"
       ]
     },
-    "@redis/json@1.0.6_@redis+client@1.5.17": {
-      "integrity": "sha512-rcZO3bfQbm2zPRpqo82XbW8zg4G/w4W3tI7X8Mqleq9goQjAGLL7q/1n1ZX4dXEAmORVZ4s1+uKLaUOg7LrUhw==",
+    "@redis/search@5.11.0_@redis+client@5.11.0": {
+      "integrity": "sha512-g1l7f3Rnyk/xI99oGHIgWHSKFl45Re5YTIcO8j/JE8olz389yUFyz2+A6nqVy/Zi031VgPDWscbbgOk8hlhZ3g==",
       "dependencies": [
         "@redis/client"
       ]
     },
-    "@redis/search@1.1.6_@redis+client@1.5.17": {
-      "integrity": "sha512-mZXCxbTYKBQ3M2lZnEddwEAks0Kc7nauire8q20oA0oA/LoA+E/b5Y5KZn232ztPb1FkIGqo12vh3Lf+Vw5iTw==",
-      "dependencies": [
-        "@redis/client"
-      ]
-    },
-    "@redis/time-series@1.0.5_@redis+client@1.5.17": {
-      "integrity": "sha512-IFjIgTusQym2B5IZJG3XKr5llka7ey84fw/NOYqESP5WUfQs9zz1ww/9+qoz4ka/S6KcGBodzlCeZ5UImKbscg==",
+    "@redis/time-series@5.11.0_@redis+client@5.11.0": {
+      "integrity": "sha512-TWFeOcU4xkj0DkndnOyhtxvX1KWD+78UHT3XX3x3XRBUGWeQrKo3jqzDsZwxbggUgf9yLJr/akFHXru66X5UQA==",
       "dependencies": [
         "@redis/client"
       ]
     },
     "@repeaterjs/repeater@3.0.4": {
       "integrity": "sha512-AW8PKd6iX3vAZ0vA43nOUOnbq/X5ihgU+mSXXqunMkeQADGiqw/PY0JNeYtD5sr0PAy51YPgAPbDoeapv9r8WA=="
-    },
-    "@repeaterjs/repeater@3.0.6": {
-      "integrity": "sha512-Javneu5lsuhwNCryN+pXH93VPQ8g0dBX7wItHFgYiwQmzE1sVdg5tWHiOgHywzL2W21XQopa7IwIEnNbmeUJYA=="
     },
     "@whatwg-node/events@0.0.2": {
       "integrity": "sha512-WKj/lI4QjnLuPrim0cfO7i+HsDSXHxNv1y0CrJhdntuO3hxWZmnXCwNDnwOvry11OjRin6cgWNF+j/9Pn8TN4w=="
@@ -372,9 +357,6 @@
         "punycode"
       ]
     },
-    "generic-pool@3.9.0": {
-      "integrity": "sha512-hymDOu5B53XvN4QT9dBmZxPX4CWhBPPLguTZ9MMFeFa/Kg0xWVfylOVNlJji/E7yTZWFd/q9GO5TxDLq156D7g=="
-    },
     "graphql-yoga@3.9.1_graphql@16.8.1_@envelop+core@3.0.6": {
       "integrity": "sha512-BB6EkN64VBTXWmf9Kym2OsVZFzBC0mAsQNo9eNB5xIr3t+x7qepQ34xW5A353NWol3Js3xpzxwIKFVF6l9VsPg==",
       "dependencies": [
@@ -440,12 +422,11 @@
     "pvutils@1.1.3": {
       "integrity": "sha512-pMpnA0qRdFp32b1sJl1wOJNxZLQ2cbQx+k6tjNtZ8CpvVhNqEPRgivZ2WOUev2YMajecdH7ctUPDvEe87nariQ=="
     },
-    "redis@4.6.15_@redis+client@1.5.17": {
-      "integrity": "sha512-2NtuOpMW3tnYzBw6S8mbXSX7RPzvVFCA2wFJq9oErushO2UeBkxObk+uvo7gv7n0rhWeOj/IzrHO8TjcFlRSOg==",
+    "redis@5.11.0": {
+      "integrity": "sha512-YwXjATVDT+AuxcyfOwZn046aml9jMlQPvU1VXIlLDVAExe0u93aTfPYSeRgG4p9Q/Jlkj+LXJ1XEoFV+j2JKcQ==",
       "dependencies": [
         "@redis/bloom",
         "@redis/client",
-        "@redis/graph",
         "@redis/json",
         "@redis/search",
         "@redis/time-series"
@@ -541,7 +522,7 @@
   },
   "workspace": {
     "dependencies": [
-      "npm:redis@^4.6.0"
+      "npm:redis@5"
     ]
   }
 }
