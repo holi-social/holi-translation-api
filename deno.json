@@ -23,6 +23,6 @@
     "exclude": ["*.md"]
   },
   "imports": {
-    "redis": "npm:redis@^5.12.1"
+    "redis": "npm:redis@^6.0.0"
   }
 }
